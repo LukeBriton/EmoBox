@@ -64,9 +64,9 @@ def prepare_data_from_jsonl(
 
     
     # find train/valid/test metadata files
-    train_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_train_fold_{fold}.jsonl')
-    test_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_test_fold_{fold}.jsonl')
-    valid_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_valid_fold_{fold}.jsonl')
+    train_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_train_fold_{fold}.jsonl')
+    test_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_test_fold_{fold}.jsonl')
+    valid_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_valid_fold_{fold}.jsonl')
     
     # check existance
     assert os.path.exists(train_data_path), f'train data path {train_data_path} does not exist!'
