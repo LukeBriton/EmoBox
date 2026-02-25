@@ -163,7 +163,7 @@ for fold in range(1, folds+1):
 	"""
 		Evaluate on test data
 	"""	
-	test = EmoDataset(dataset, user_data_dir, meta_data_dir, fold=fold, split="test")
+	test = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="test")
 	test_pred = []
 	test_targets = []
 	for data in test:
