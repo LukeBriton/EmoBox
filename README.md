@@ -147,7 +147,7 @@ def load_label_map(meta_data_dir: Path, dataset: str):
 labels, label2idx, label_map = load_label_map(meta_data_dir, dataset)
 
 ## take n-flod cross-validation as an example
-for fold in range(folds):
+for fold in range(1, folds+1):
 	
 	train = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="train")
 	val = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="valid")
