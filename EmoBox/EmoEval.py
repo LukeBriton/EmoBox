@@ -56,7 +56,7 @@ class EmoEval():
         scores = ComputePerformance(self.targets, self.predictions) 
         return scores
     
-    def write_scores(self, path, scores)
+    def write_scores(self, path, scores):
         f = open(path, 'w')
         WriteScore(f, scores)
             
