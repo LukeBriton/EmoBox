@@ -145,10 +145,10 @@ def read_wav(data):
     return wav 
 
 class EmoDataset(Dataset):
-    def __init__(self, dataset, data_dir, meta_data_dir, fold=1, split="train"):
+    def __init__(self, dataset, data_dir, meta_data_dir, label_map, fold=1, split="train"):
         super().__init__()
         self.data_dir = data_dir
-        train_data, valid_data, test_data = prepare_data_from_jsonl(dataset, data_dir, meta_data_dir, fold = fold)
+        train_data, valid_data, test_data = prepare_data_from_jsonl(dataset, data_dir, meta_data_dir, label_map, fold = fold)
         if split == 'train':
             self.data_list = train_data
         elif split == 'valid':
