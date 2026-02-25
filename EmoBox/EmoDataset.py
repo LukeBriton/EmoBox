@@ -81,6 +81,7 @@ def prepare_data_from_jsonl(
     # load in train & test data
     train_data = []
     test_data = []
+    valid_data = []
     with open(train_data_path) as f:
         for line in f:
             train_data.append(json.loads(line.strip()))
