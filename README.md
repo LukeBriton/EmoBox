@@ -124,7 +124,8 @@ Using `EmoDataset` and `EmoEval`, it is easy to compare results from any model t
 We provide an example pipeline code using `EmoDataset` and `EmoEval`:
 
 ```python
-from EmoBox import EmoDataset, EmoEval
+from EmoBox.EmoDataset import EmoDataset
+from EmoBox.EmoEval import EmoEval
 
 dataset = "iemocap"
 folds = 5 # different datasets have different number of folds, which can be find in data/ 
