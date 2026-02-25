@@ -55,6 +55,10 @@ def prepare_data_from_jsonl(
     split_ratio=[80, 20],
     seed=12,
 ):
+    # tolerate int folds
+    if fold is not None:
+        fold = str(fold)
+
     # setting seeds for reproducible code.
     random.seed(seed)
 
