@@ -104,7 +104,7 @@ def prepare_data_from_jsonl(
     num_train_data = len(train_data)
     num_valid_data = len(valid_data)
     num_test_samples = len(test_data)
-    label_map = json.load(open(label_map))
+    label_map = label_map
     logger.info(f'Num. training samples {num_train_data}')
     logger.info(f'Num. valid samples {num_valid_data}')
     logger.info(f'Num. test samples {num_test_samples}')
