@@ -33,30 +33,30 @@ def WriteScore(f, score ):
 class EmoEval():
     def __init__(self, predictions, data_labels):
         """
-            predictions: [{"key": "xxx", pred":1}, {"key":"yyy",pred":2},...]
-            data_labels: [{"key":"xxx",label":1}, {"key":"yyy",label":3}, ...]
+            predictions: [{"key":"xxx", "pred":1}, {"key":"yyy", "pred":2},...]
+            data_labels: [{"key":"xxx","label":1}, {"key":"yyy","label":3},...]
         """
-        assert len(predictions) == len(data), f'the number of predictions shoud be equal to labels'
+        assert len(predictions) == len(data_labels), f'the number of predictions shoud be equal to labels'
         for pred, label in zip(predictions, data_labels):
             pred_key = pred['key']
             label_key = label['key']
             assert pred_key == label_key, f'prediction and label should have the same key, while prediction has a key {pred_key}, label has a key {label_key}' 
         
         self.targets = []
-        for instance in dataset:
+        for instance in data_labels:
             label = instance['label']
             self.targets.append(label)
         
         self.predictions = []
-
         for instance in predictions:
-            pred = instance['prediction']
-            self.predictions.append(preed)
+            pred = instance['pred']
+            self.predictions.append(pred)
+
     def compute_metrics(self,):
         scores = ComputePerformance(self.targets, self.predictions) 
         return scores
     
-    def write_scores(self, path, scores)
+    def write_scores(self, path, scores):
         f = open(path, 'w')
         WriteScore(f, scores)
             

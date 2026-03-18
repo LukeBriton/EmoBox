@@ -6,6 +6,8 @@ import soundfile as sf
 import numpy as np
 import logging
 import torchaudio
+import random
+
 SAMPLING_RATE=16000
 logger = logging.getLogger(__name__)
 
@@ -53,14 +55,18 @@ def prepare_data_from_jsonl(
     split_ratio=[80, 20],
     seed=12,
 ):
+    # tolerate int folds
+    if fold is not None:
+        fold = str(fold)
+
     # setting seeds for reproducible code.
     random.seed(seed)
 
     
     # find train/valid/test metadata files
-    train_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_train_fold_{fold}.jsonl')
-    test_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_test_fold_{fold}.jsonl')
-    valid_data_path = os.path.join(data_dir, dataset, 'fold_'+fold, f'{dataset}_valid_fold_{fold}.jsonl')
+    train_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_train_fold_{fold}.jsonl')
+    test_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_test_fold_{fold}.jsonl')
+    valid_data_path = os.path.join(meta_data_dir, dataset, 'fold_'+fold, f'{dataset}_valid_fold_{fold}.jsonl')
     
     # check existance
     assert os.path.exists(train_data_path), f'train data path {train_data_path} does not exist!'
@@ -75,6 +81,7 @@ def prepare_data_from_jsonl(
     # load in train & test data
     train_data = []
     test_data = []
+    valid_data = []
     with open(train_data_path) as f:
         for line in f:
             train_data.append(json.loads(line.strip()))
@@ -98,7 +105,7 @@ def prepare_data_from_jsonl(
     num_train_data = len(train_data)
     num_valid_data = len(valid_data)
     num_test_samples = len(test_data)
-    label_map = json.load(open(label_map))
+    label_map = label_map
     logger.info(f'Num. training samples {num_train_data}')
     logger.info(f'Num. valid samples {num_valid_data}')
     logger.info(f'Num. test samples {num_test_samples}')
@@ -145,10 +152,10 @@ def read_wav(data):
     return wav 
 
 class EmoDataset(Dataset):
-    def __init__(self, dataset, data_dir, meta_data_dir, fold=1, split="train"):
+    def __init__(self, dataset, data_dir, meta_data_dir, label_map, fold=1, split="train"):
         super().__init__()
         self.data_dir = data_dir
-        train_data, valid_data, test_data = prepare_data_from_jsonl(dataset, data_dir, meta_data_dir, fold = fold)
+        train_data, valid_data, test_data = prepare_data_from_jsonl(dataset, data_dir, meta_data_dir, label_map, fold = fold)
         if split == 'train':
             self.data_list = train_data
         elif split == 'valid':

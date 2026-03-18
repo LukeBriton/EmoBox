@@ -124,20 +124,33 @@ Using `EmoDataset` and `EmoEval`, it is easy to compare results from any model t
 We provide an example pipeline code using `EmoDataset` and `EmoEval`:
 
 ```python
-from EmoBox import EmoDataset, EmoEval
+from EmoBox.EmoDataset import EmoDataset
+from EmoBox.EmoEval import EmoEval
+import json
+from pathlib import Path
 
 dataset = "iemocap"
 folds = 5 # different datasets have different number of folds, which can be find in data/ 
 user_data_dir = "./" # path to EmoBox
-meta_data_dir = "data/" # path to data folder 
-label2idx = {'hap':0, 'sad':1, 'ang':2, 'neu':3} # you may need to define a label to index mapping for your own training, see `data/iemocap/label_map.json`
+meta_data_dir = "data/" # path to data folder
 
+def load_label_map(meta_data_dir: Path, dataset: str):
+    # TypeError: unsupported operand type(s) for /: 'str' and 'str'
+    lm_path = Path(meta_data_dir) / dataset / "label_map.json"
+    if not lm_path.exists():
+        raise FileNotFoundError(f"label_map.json not found at {lm_path}")
+    label_map = json.loads(lm_path.read_text(encoding="utf-8"))
+    labels = sorted(set(label_map.values()))
+    label2idx = {lab: i for i, lab in enumerate(labels)}
+    return labels, label2idx, label_map
+
+labels, label2idx, label_map = load_label_map(meta_data_dir, dataset)
 
 ## take n-flod cross-validation as an example
-for fold in range(folds):
+for fold in range(1, folds+1):
 	
-	train = EmoDataset(dataset, user_data_dir, meta_data_dir, fold=fold, split="train")
-	val = EmoDataset(dataset, user_data_dir, meta_data_dir, fold=fold, split="valid")
+	train = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="train")
+	val = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="valid")
 	
 	"""
 		Train your model
@@ -146,11 +159,11 @@ for fold in range(folds):
 		audio = data["audio"] # raw wav tensor
 		label = data["label"] # label, e.g. 'hap'
 	
-		
+	
 	"""
 		Evaluate on test data
 	"""	
-	test = EmoDataset(dataset, user_data_dir, meta_data_dir, fold=fold, split="test")
+	test = EmoDataset(dataset, user_data_dir, meta_data_dir, label_map, fold=fold, split="test")
 	test_pred = []
 	test_targets = []
 	for data in test:
@@ -160,7 +173,7 @@ for fold in range(folds):
 		label_index = label2idx[label]
 		pred = model(audio) # prediction for label index
 		test_pred.append({"key":key, "pred":pred})
-		test_targets.append({"key:key", "label":label_index})
+		test_targets.append({"key":key, "label":label_index})
 	
 	emo_eval = EmoEval(test_pred, test_targets)
 	scores = emo_eval.compute_metrics()
